@@ -1,0 +1,30 @@
+/*
+    The specification of the GPIO device.
+*/
+
+//Import the function prototypes
+import <class.tsl>
+
+/*
+    The device specification is a TSL2 template. The template takes one parameters:
+        * an interface to the os, which it can use to inform the OS of changes to the status of the output bit.
+*/
+template gpio_dev_inst(gpio_os os)
+
+//This is an instance of the generic gpio_dev interface defined in class.tsl
+derive gpio_dev;
+
+//An internal varaible to keep track of the current state of the output bit
+uint<1> output;
+
+//The write8 entry point. This is invoked by the driver to perform a register write. It updates the output and informs the OS that its status changed. 
+task controllable void write8(uint<8> val){
+    output = val[0:0];
+    os.value_set(output);
+};
+
+function uint<1> get_value(){
+    return output;
+};
+
+endtemplate

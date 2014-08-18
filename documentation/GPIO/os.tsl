@@ -1,0 +1,52 @@
+/*
+   The specification for the operating system component
+*/
+
+//Import the function prototypes
+import <class.tsl>
+
+/*
+    The OS specification is a TSL2 template. The template takes 2 parameters:
+        * an interface to the driver so that we can call call driver functions
+        * an interface to the device so that we can query device state and check that the driver is performing the requested actions
+*/
+template gpio_os_inst(gpio_drv drv, gpio_dev dev)
+
+//This is an instance of the generic gpio_os interface defined in class.tsl
+derive gpio_os;
+
+//The main OS process is a forever loop that dispatches requests to change the state of the GPIO pin
+process pos {
+    forever{
+        choice{        // The OS non-deterministically makes a request
+            set_bit();
+            clr_bit();
+            {};        // This is important. It ensures that the driver cannot assume a driver entry point will be invoked again. 
+        };
+        pause;         // Break the forever loop so that it is not instantaneous
+    };
+};
+
+bool making_request = false;
+
+task void set_bit(){
+    making_request = true;
+    drv.set_bit();
+    making_request = false;
+
+    assert(dev.get_value() == 1'h1);
+};
+
+task void clr_bit(){
+    making_request = true;
+    clearing: drv.clr_bit();
+    making_request = false;
+
+    assert(dev.get_value() == 1'h0);
+};
+
+procedure void value_set(uint<1> value){
+    assert(making_request);
+};
+
+endtemplate

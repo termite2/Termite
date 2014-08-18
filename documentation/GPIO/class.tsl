@@ -1,0 +1,29 @@
+/*
+    There are 3 interacting components in our system: 
+        * The driver
+        * The hardware device 
+        * The operating system
+
+    We declare a generic interface of each here.
+*/
+
+template gpio_drv
+
+//The two driver entry points the driver must have
+task uncontrollable void set_bit();
+task uncontrollable void clr_bit();
+
+endtemplate
+
+template gpio_dev
+
+task controllable void write8(uint<8> val);
+function uint<1> get_value();
+
+endtemplate
+
+template gpio_os
+
+procedure void value_set(uint<1> value);
+
+endtemplate

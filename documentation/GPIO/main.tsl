@@ -1,0 +1,17 @@
+/*
+   The top level termite component. It instantiates the gpio device, os and driver and connects then by passing their interfaces to each other. 
+*/
+
+//Import each component
+import <os.tsl>
+import <gpio.tsl>
+import <drv.tsl>
+
+template main
+
+//eg. declare an instance of "gpio_os_inst", call it "os", and pass it handles to the driver and gpio device
+instance gpio_os_inst  os  (drv, dev);
+instance gpio_dev_inst dev (os);
+instance gpio_drv_inst drv (dev, os);
+
+endtemplate

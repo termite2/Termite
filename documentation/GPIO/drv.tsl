@@ -1,0 +1,27 @@
+/*
+    The driver to be generated
+*/
+
+//Import the function prototypes
+import <class.tsl>
+
+/*
+   The driver lives within a TSL2 template. The template takes two parameters: 
+       * an interface to the device, which it can use to read and write device registers
+       * an interface to the OS, which it can use to invoke OS callbacks and retreive OS parameters
+*/
+template gpio_drv_inst(gpio_dev dev, gpio_os os)
+
+//This is an instance of the generic gpio_drv interface defined in class.tsl
+derive gpio_drv;
+
+//The driver methods for setting an clearing the output bit
+task uncontrollable void set_bit(){
+    ...;
+};
+
+task uncontrollable void clr_bit(){
+    ...;
+};
+
+endtemplate
