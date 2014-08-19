@@ -17,7 +17,6 @@ endtemplate
 
 template gpio_dev
 
-task controllable void write8(uint<8> val);
 function uint<1> get_value();
 
 endtemplate
