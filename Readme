@@ -1,3 +1,15 @@
 The Termite driver synthesis tool
 
 http://www.termite2.org
+
+To setup: 
+    $ ./setup.hs
+
+This will clone the needed git subrepos and setup a cabal sandbox.
+
+To build: 
+    $ cabal install termite-app --bindir=bin
+
+To run:
+    $ bin/termite-app -i documentation/GPIO/main.tsl -s
+
