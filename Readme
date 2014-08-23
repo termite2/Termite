@@ -22,5 +22,5 @@ To build Termite:
 To run:
     $ export LD_LIBRARY_PATH=`pwd`/lib/cudd/libso
     $ cd documentation/GPIO
-    $ ../../bin/termite-app -i main.tsl -s
+    $ ../../bin/termite -i main.tsl -s
 
