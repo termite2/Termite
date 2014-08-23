@@ -17,7 +17,7 @@ To build CUDD:
 To build Termite:
     $ export LD_LIBRARY_PATH=`pwd`/lib/cudd/libso
     $ cabal update
-    $ cabal install termite --extra-include-dirs=`pwd`/lib/cudd/include --extra-lib-dirs=`pwd`/lib/cudd/libso --bindir=bin
+    $ cabal install termite --extra-include-dirs=`pwd`/lib/cudd/include --extra-lib-dirs=`pwd`/lib/cudd/libso --bindir=`pwd`/bin
 
 To run:
     $ export LD_LIBRARY_PATH=`pwd`/lib/cudd/libso
