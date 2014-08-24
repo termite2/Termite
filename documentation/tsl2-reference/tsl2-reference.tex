@@ -1202,19 +1202,19 @@ declarations, constant declarations, and template declarations.
 
 \section{Import statements}
 
-Import statements are used to combine multiple \tsl{} files into a 
-single specification.  They are only allowed in the top-level 
-syntactic scope, i.e., they are illegal inside template of type 
-declarations.  An import statement consists of the \src{import} 
-keyword followed by file path in angle brackets:
+Import statements are used to combine multiple \tsl{} files.  They 
+are only allowed in the top-level syntactic scope, i.e., they are 
+illegal inside template of type declarations.  An import statement 
+consists of the \src{import} keyword followed by file path in 
+angle brackets:
 \begin{tsllisting}{}
 import<ide_dev.tsl>
 import<os/ide_tsl2/l4_ide.tsl>
 import<../../os/ide_tsl2/ide_class.tsl>
 \end{tsllisting}
-The \tsl{} compiler appends this path to each import directory, 
-specified via the \src{-I} command line switch, in order, until a  
-file with this name is found.
+The \tsl{} compiler appends this path to the current directory and 
+to each import directory, specified via the \src{-I} command line 
+switch, in order, until a  file with this name is found.
 
 \section{Type declarations}\label{s:r:typedecl}
 
@@ -1266,7 +1266,7 @@ template item is one of:
     \item Constant declaration
     \item Global variable declaration
     \item Init block
-    \item Always block
+    \item Prefix block
     \item Process
     \item Method
     \item Goal
@@ -1276,7 +1276,7 @@ template item is one of:
 Derive statements and instance declarations were considered in 
 Section~\ref{s:o:templates}.  Type declarations and constant 
 declarations were considered in Sections~\ref{s:r:typedecl} and
-\ref{s:r:constant}.  We describe the remaining types of template 
+\ref{s:r:constant}.  We describe the remaining kinds of template 
 items below.
 
 \subsection{Global variable declarations}
@@ -1284,7 +1284,7 @@ items below.
 Global variables (Section~\ref{s:o:variables}) are declared in the 
 template scope.  The declaration syntax is the same as for local 
 variables (Section~\ref{s:r:localvar}) with the optional 
-\src{export} qualifier that indicates that the variable can be 
+\src{export} qualifier, which indicates that the variable can be 
 accessed from outside the template:
 
 \begin{bnflisting}{}
@@ -1327,7 +1327,7 @@ endtemplate
 \end{tsllisting}
 In general, however, \src{init} blocks are a more general 
 mechanism for constraining initial state, for example the 
-following condition cannot be captures using initial variable 
+following condition cannot be captured using initial variable 
 assignments:
 \begin{tsllisting}{}
 template linux_uart_drv(uart_dev dev)
@@ -1348,16 +1348,17 @@ template linux_uart_drv(uart_dev dev)
 endtemplate
 \end{tsllisting}
 
-\subsection{Always blocks}\label{s:r:always}
+\subsection{Prefix blocks}\label{s:r:always}
 
-An always block is an arbitrary statement that is automatically 
+A prefix block is an arbitrary statement that is automatically 
 prepended to all transitions of the system.  It is intended as a 
 low-level mechanism that allows implementing certain behaviours 
 that are tricky to achieve without it.  It should be used with 
-care and should probably be hidden behind syntactic sugar.
+care and will likely be hidden behind syntactic sugar in the 
+future.
 
 \begin{bnflisting}{}
-<always> := "always" <statement>
+<prefix> := "prefix" <statement>
 \end{bnflisting}
 
 \subsection{Processes}
@@ -1391,11 +1392,7 @@ A method declaration consists of
                 <ident> "("                 // Method name
                     [<arg> ("," <arg>)*]    // Arguments
                 ")"
-                    (                       // Partial body:
-                     ["before" <statement>] // preamble
-                     ["after" <statement>]  // epilogue
-                    ) |
-                    <statement>             // complete form
+                <statement>              // body
 
 <methCateg> := "function"
              | "procedure"
@@ -1405,133 +1402,150 @@ A method declaration consists of
 <arg> := ["out"] <typeSpec> <ident>
 \end{bnflisting}
 
+%\begin{bnflisting}{}
+%<methodDecl> := ["export"]               // Exported method?
+%                <methCateg>              // Method category
+%                ("void" | <typeSpec>)       // Return type
+%                <ident> "("                 // Method name
+%                    [<arg> ("," <arg>)*]    // Arguments
+%                ")"
+%                    (                       // Partial body:
+%                     ["before" <statement>] // preamble
+%                     ["after" <statement>]  // epilogue
+%                    ) |
+%                    <statement>             // complete form
+%
+%<methCateg> := "function"
+%             | "procedure"
+%             | "task" [ "controllable" 
+%                      | "uncontrollable"]
+%
+%<arg> := ["out"] <typeSpec> <ident>
+%\end{bnflisting}
+
 Method arguments are used to pass data both to and from the 
-method.  Each individual argument can be declared as an input or 
-an output argument, but not both.  Syntactically, input and output 
-arguments are distinguished using the \src{out} qualifier.
+method.  An argument can be declared as an input or an output 
+argument, but not both.  Syntactically, input and output arguments 
+are distinguished using the \src{out} qualifier.
 
 Both input and output arguments can be read and modified in the 
 body of the method; however the initial value of an output 
 argument is non-derministic.  The final value of an input argument 
-is dropped, while the final value of an output argument is 
+is discarded, while the final value of an output argument is 
 propagated to the L-expression (Section~\ref{s:r:lexpr}) passed as 
-the actual argument to the method.  Note that for controllable and 
-uncontrollable tasks the output value is propagated to the 
-argument at the beginning of the next transition performed by the 
-process after the implicit pause location following the return 
-statement (Section~\ref{s:r:return}).
+the actual argument to the method.
 
-\subsubsection{Method body}
-
-\comment{The method overriding mechanism described in this section 
-is probably too complex and not very useful in practice.  We will 
-most likely simplify it by getting rid of \src{before} and \src{after}
-constructs.}
-
-Method body declaration can be written in the \emph{complete} or 
-\emph{partial} form.  A complete declaration is simply a \tsl{} 
-statement.  A partial declaration consists of an optional preamble 
-and an optional epilogue that are intended to execute respectively 
-before and after the main body of the method declared in the child 
-template.  If neither the preamble not the epilogue are specified, 
-then the body of the method remains empty.  
-
-The full method body is constructed by recursively merging the method 
-body provided in the method declaration with the overloaded method 
-declaration in the parent template (if one exists) using 
-Algorithm~\ref{a:method}.  The following examples illustrate the algorithm.
-
-
-\begin{algorithm}
-    \begin{algorithmic}[1]
-        \Statex {\bf Input:} Method body $M$, where $M$ is 
-        either a complete body $(b)$ or partial body $(p,e)$.
-        \Statex {\bf Output:} Method body merged with the parent body (if one exists)
-        \Function{fullBody}{$M$}
-          \State{\it // Find previous method declaration in one of parent templates}
-          \State $M' \gets$ \Call{parentMethod}{$M$}
-          \If{$M'=nil$}
-            \State {\it // $M$ is not an overloaded method}
-            \State {\bf return} $M$
-          \EndIf
-          \Switch{(M, \Call{fullBody}{$M'$})}
-            \State{\it //Parent method has a complete body: override it}
-            \Case{$(M, (b'))$}
-              \Return{$M$}
-            \EndCase
-            \State{\it // Both parent and child have partial bodies: merge}
-            \State{\it // preambles and epilogues using sequential composition}
-            \Case{$((p,e), (p',e'))$} 
-              \Return{$((p';p), (e;e'))$}
-            \EndCase
-            \State{\it // Child has a complete body, parent has partial body: prepend}
-            \State{\it // and append parent's preamble and epilogue to the child}
-            \Case{$((b), (p',e'))$} 
-              \Return{$(p';b;e')$}
-            \EndCase
-            \Case{\bf otherwise}
-              \Return {\bf error}
-            \EndCase
-          \EndSwitch 
-        \EndFunction
-    \end{algorithmic}
-    \caption{}\label{a:method}
-\end{algorithm}
-
-\begin{tsllisting}{}
-// global variable
-bool x;
-
-// parent declaration
-procedure void p(uint<16> arg)
-before{ 
-    assume(arg != 0);
-};
-after{
-    assert(x);
-};
-
-// child declaration
-procedure void p(uint<16> arg)
-{
-    x = (arg > 5);
-};
-
-// full child method body generated by the compiler
-procedure void p(uint<16> arg)
-{
-    assume(arg != 0);
-    x = (arg > 5);
-    assert(x);
-};
-\end{tsllisting}
-
-\begin{tsllisting}{}
-// parent declaration
-procedure void p(uint<16> arg)
-before{ 
-    assume(arg != 0);
-};
-after{
-    assert(x);
-};
-
-// child declaration
-procedure void p(uint<16> arg)
-before{
-    x = (arg > 5);
-};
-
-// full child method body generated by the compiler
-procedure void p(uint<16> arg)
-before{
-    assume(arg != 0);
-    x = (arg > 5);
-};
-after{
-    assert(x);
-};
-\end{tsllisting}
+%\subsubsection{Method body}
+%
+%\comment{The method overriding mechanism described in this section 
+%is probably too complex and not very useful in practice.  We will 
+%most likely simplify it by getting rid of \src{before} and \src{after}
+%constructs.}
+%
+%Method body declaration can be written in the \emph{complete} or 
+%\emph{partial} form.  A complete declaration is simply a \tsl{} 
+%statement.  A partial declaration consists of an optional preamble 
+%and an optional epilogue that are intended to execute respectively 
+%before and after the main body of the method declared in the child 
+%template.  If neither the preamble not the epilogue are specified, 
+%then the body of the method remains empty.  
+%
+%The full method body is constructed by recursively merging the method 
+%body provided in the method declaration with the overloaded method 
+%declaration in the parent template (if one exists) using 
+%Algorithm~\ref{a:method}.  The following examples illustrate the algorithm.
+%
+%
+%\begin{algorithm}
+%    \begin{algorithmic}[1]
+%        \Statex {\bf Input:} Method body $M$, where $M$ is 
+%        either a complete body $(b)$ or partial body $(p,e)$.
+%        \Statex {\bf Output:} Method body merged with the parent body (if one exists)
+%        \Function{fullBody}{$M$}
+%          \State{\it // Find previous method declaration in one of parent templates}
+%          \State $M' \gets$ \Call{parentMethod}{$M$}
+%          \If{$M'=nil$}
+%            \State {\it // $M$ is not an overloaded method}
+%            \State {\bf return} $M$
+%          \EndIf
+%          \Switch{(M, \Call{fullBody}{$M'$})}
+%            \State{\it //Parent method has a complete body: override it}
+%            \Case{$(M, (b'))$}
+%              \Return{$M$}
+%            \EndCase
+%            \State{\it // Both parent and child have partial bodies: merge}
+%            \State{\it // preambles and epilogues using sequential composition}
+%            \Case{$((p,e), (p',e'))$} 
+%              \Return{$((p';p), (e;e'))$}
+%            \EndCase
+%            \State{\it // Child has a complete body, parent has partial body: prepend}
+%            \State{\it // and append parent's preamble and epilogue to the child}
+%            \Case{$((b), (p',e'))$} 
+%              \Return{$(p';b;e')$}
+%            \EndCase
+%            \Case{\bf otherwise}
+%              \Return {\bf error}
+%            \EndCase
+%          \EndSwitch 
+%        \EndFunction
+%    \end{algorithmic}
+%    \caption{}\label{a:method}
+%\end{algorithm}
+%
+%\begin{tsllisting}{}
+%// global variable
+%bool x;
+%
+%// parent declaration
+%procedure void p(uint<16> arg)
+%before{ 
+%    assume(arg != 0);
+%};
+%after{
+%    assert(x);
+%};
+%
+%// child declaration
+%procedure void p(uint<16> arg)
+%{
+%    x = (arg > 5);
+%};
+%
+%// full child method body generated by the compiler
+%procedure void p(uint<16> arg)
+%{
+%    assume(arg != 0);
+%    x = (arg > 5);
+%    assert(x);
+%};
+%\end{tsllisting}
+%
+%\begin{tsllisting}{}
+%// parent declaration
+%procedure void p(uint<16> arg)
+%before{ 
+%    assume(arg != 0);
+%};
+%after{
+%    assert(x);
+%};
+%
+%// child declaration
+%procedure void p(uint<16> arg)
+%before{
+%    x = (arg > 5);
+%};
+%
+%// full child method body generated by the compiler
+%procedure void p(uint<16> arg)
+%before{
+%    assume(arg != 0);
+%    x = (arg > 5);
+%};
+%after{
+%    assert(x);
+%};
+%\end{tsllisting}
 
 
 \subsection{Goals}
@@ -1555,7 +1569,7 @@ The wire expression is defined over global variables and wires of
 the current template and other templates accessible via 
 hierarchical identifiers.  However, circular dependencies among 
 wire expressions are forbidden.  If the wire expression is 
-omitted, the wire is a \emph{pure wire} that must be re-defined in 
+omitted, the wire is a \emph{pure wire} and must be re-defined in 
 child templates.  In merging template with its parents, the \tsl{} 
 compiler picks the last wire declaration in the inheritance 
 hierarchy.
