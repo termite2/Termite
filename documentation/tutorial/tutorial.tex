@@ -106,7 +106,7 @@ The process \code{pos} loops forever (the \code{forever} block), nondeterministi
 
 The \code{set\_bit} task ensures that the \code{making\_request} flag is \code{true} whenever execution is in the driver function. This is to ensure that the driver does not make changes to the GPIO bit when not requested to as explained below. It then calls the driver method and checks that the driver performed the required action by calling the device's \code{get\_value()} function and checking that it is the expected value.
 
-All that remains is the \code{value\_set()} virtual callback function. This is called by the device whenever the value of the GPIO pin is changed. It asserts that we are currently making a request using the \code{making\_request} flag. This prevents the driver from changing the GPIO output when not requested to. It does not, however, prevent the driver from changing the value to a temporarily wrong value during the driver call. Handling this case is covered in section \ref{sec:extending}.
+All that remains is the \code{value\_set()} virtual callback function. This is called by the device whenever the value of the GPIO pin is changed. It asserts that we are currently making a request using the \code{making\_request} flag. This prevents the driver from changing the GPIO output when not requested to. It does not, however, prevent the driver from changing the value to a temporarily wrong value during the driver call. 
 
 \begin{figure}[H]
 \lstset{numbers=left}
@@ -261,9 +261,6 @@ You may save \code{drv.tsl} and then rerun Termite. As there are no magic blocks
     \caption{The debugger after generating code}
     \label{fig:screenshot_after}
 \end{figure}
-
-\section{Extending the specifications}
-\label{sec:extending}
 
 \section{Further reading}
 An extensively commented I2C driver example is available at \url{https://github.com/termite2/Termite/tree/master/documentation/i2c}. It demonstrates more advanced usage of Termite on a real device. 
