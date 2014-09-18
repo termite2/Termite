@@ -37,3 +37,6 @@
 [submodule "lib/cudd"]
 	path = lib/cudd
 	url = git@github.com:termite2/cudd.git
+[submodule "specs"]
+	path = specs
+	url = git@github.com:termite2/specs.git
