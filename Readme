@@ -2,11 +2,21 @@ The Termite driver synthesis tool
 
 http://www.termite2.org
 
-Termite must be build on a Linux system. The build process has been thoroughly tested on Ubuntu and Arch Linux.
-A working Haskell install is required. You will need to install ghc version 7.8 or greater and cabal-install version 1.20 or greater using your system's package manager.
+Termite must be built on a Linux system. The build process has been tested on 64 bit versions of Ubuntu and Arch Linux.
+A working Haskell installation is required. You will need to install ghc version 7.8 or greater and cabal-install version 1.20 or greater using your system's package manager.
 
 To clone the needed git subrepos and setup a cabal sandbox:
     $ ./setup.sh
+
+To build:
+    $ ./build.sh
+
+To run:
+    $ source ./envs.sh
+    $ cd documentation/GPIO
+    $ ../../bin/termite -i main.tsl -s
+
+Or, if you prefer to build CUDD separately:
 
 To build CUDD: 
     $ pushd lib/cudd
@@ -18,9 +28,4 @@ To build Termite:
     $ export LD_LIBRARY_PATH=`pwd`/lib/cudd/libso
     $ cabal update
     $ cabal install termite --extra-include-dirs=`pwd`/lib/cudd/include --extra-lib-dirs=`pwd`/lib/cudd/libso --bindir=`pwd`/bin
-
-To run:
-    $ export LD_LIBRARY_PATH=`pwd`/lib/cudd/libso
-    $ cd documentation/GPIO
-    $ ../../bin/termite -i main.tsl -s
 
