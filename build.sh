@@ -3,8 +3,8 @@
 pushd lib/cudd
 
 if [ "`getconf LONG_BIT`" == "64" ]; 
-    then make -f Makefile.64bit
-    else make -f Makefile.32bit
+    then make -f Makefile.64bit libso
+    else make -f Makefile.32bit libso
 fi
 
 popd
