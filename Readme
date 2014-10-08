@@ -11,6 +11,9 @@ To clone the needed git subrepos and setup a cabal sandbox:
 To build:
     $ ./build.sh
 
+Copy the language definition to a place where GTKSourceView can find it:
+    $ sudo cp lib/tsl/tools/tsl.lang /usr/share/gtksourceview-2.0/language-specs/
+
 To run:
     $ source ./envs.sh
     $ cd documentation/GPIO
