@@ -1,42 +1,42 @@
 [submodule "lib/code-widget"]
 	path = lib/code-widget
-	url = git@github.com:termite2/code-widget.git
+	url = https://github.com/termite2/code-widget.git
 [submodule "lib/haskell_cudd"]
 	path = lib/haskell_cudd
-	url = git@github.com:termite2/haskell_cudd.git
+	url = https://github.com/termite2/haskell_cudd.git
 [submodule "lib/debug"]
 	path = lib/debug
-	url = git@github.com:termite2/debug.git
+	url = https://github.com/termite2/debug.git
 [submodule "lib/synthesis"]
 	path = lib/synthesis
-	url = git@github.com:termite2/synthesis.git
+	url = https://github.com/termite2/synthesis.git
 [submodule "lib/util"]
 	path = lib/util
-	url = git@github.com:termite2/util.git
+	url = https://github.com/termite2/util.git
 [submodule "lib/tsl"]
 	path = lib/tsl
-	url = git@github.com:termite2/tsl.git
+	url = https://github.com/termite2/tsl.git
 [submodule "lib/graph-draw"]
 	path = lib/graph-draw
-	url = git@github.com:termite2/graph-draw.git
+	url = https://github.com/termite2/graph-draw.git
 [submodule "lib/hast"]
 	path = lib/hast
-	url = git@github.com:termite2/hast.git
+	url = https://github.com/termite2/hast.git
 [submodule "lib/bv"]
 	path = lib/bv
-	url = git@github.com:termite2/bv.git
+	url = https://github.com/termite2/bv.git
 [submodule "tools/termite-app"]
 	path = tools/termite-app
-	url = git@github.com:termite2/termite-app.git
+	url = https://github.com/termite2/termite-app.git
 [submodule "tools/bdd"]
 	path = tools/bdd
-	url = git@github.com:termite2/bdd.git
+	url = https://github.com/termite2/bdd.git
 [submodule "lib/bdd"]
 	path = lib/bdd
-	url = git@github.com:termite2/bdd.git
+	url = https://github.com/termite2/bdd.git
 [submodule "lib/cudd"]
 	path = lib/cudd
-	url = git@github.com:termite2/cudd.git
+	url = https://github.com/termite2/cudd.git
 [submodule "specs"]
 	path = specs
-	url = git@github.com:termite2/specs.git
+	url = https://github.com/termite2/specs.git
