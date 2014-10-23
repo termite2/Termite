@@ -33,7 +33,7 @@
 	url = https://github.com/termite2/bdd.git
 [submodule "lib/cudd"]
 	path = lib/cudd
-	url = https://github.com/termite2/cudd.git
+	url = https://github.com/davidcock/cudd.git
 [submodule "specs"]
 	path = specs
 	url = https://github.com/termite2/specs.git
