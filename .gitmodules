@@ -1,9 +1,6 @@
 [submodule "lib/code-widget"]
 	path = lib/code-widget
 	url = https://github.com/termite2/code-widget.git
-[submodule "lib/haskell_cudd"]
-	path = lib/haskell_cudd
-	url = https://github.com/termite2/haskell_cudd.git
 [submodule "lib/debug"]
 	path = lib/debug
 	url = https://github.com/termite2/debug.git
