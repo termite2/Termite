@@ -15,7 +15,7 @@ libpango1.0-dev
 libgtksourceview2.0-dev
 graphviz
 
-Finally, you will need to build from sources and install Z3 SMT solver from Microsoft Research, available at https://z3.codeplex.com.  Not that Z3 is free for non-commercial academic purposes only.
+Finally, you will need to build from sources and install Z3 SMT solver from Microsoft Research, available at https://z3.codeplex.com.  Note that Z3 is free for non-commercial academic purposes only.
 
 To clone the needed git subrepos and setup a cabal sandbox:
     $ ./setup.sh
